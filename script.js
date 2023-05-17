@@ -1,4 +1,4 @@
-const BASE_URL = 'https://crudcrud.com/api/d761edbd855a415484201833e53b9959';
+const BASE_URL = 'https://crudcrud.com/api/1f5d685a5cb14052a8c31b32a6cbcbf1';
 
 const form = document.querySelector('#_form');
 
@@ -8,8 +8,8 @@ function addToTheList(e) {
   e.preventDefault();
   const name = document.querySelector('#name').value;
   const description = document.querySelector('#description').value;
-  const price = document.querySelector('#price').value;
-  const quantity = document.querySelector('#quantity').value;
+  const price = Number(document.querySelector('#price').value);
+  const quantity = Number(document.querySelector('#quantity').value);
 
   const item = { name, description, price, quantity };
 
@@ -89,13 +89,12 @@ function showStockList(item) {
         name: item.name,
         description: item.description,
         price: item.price,
-        quantity: Number(item.quantity) - 1,
+        quantity: item.quantity - 1,
       })
       .then((res) => console.log(res))
       .catch((err) => console.log(err));
-    document.querySelector('#quantity').innerHTML = `${
-      Number(item.quantity) - 1
-    } Pics`;
+    // document.querySelector('#quantity').innerHTML = `${item.quantity - 1} Pics`;
+    showStock();
   };
 
   // Button 2
@@ -114,13 +113,12 @@ function showStockList(item) {
         name: item.name,
         description: item.description,
         price: item.price,
-        quantity: Number(item.quantity) - 2,
+        quantity: item.quantity - 2,
       })
       .then((res) => console.log(res))
       .catch((err) => console.log(err));
-    document.querySelector('#quantity').innerHTML = `${
-      Number(item.quantity) - 2
-    } Pics`;
+    // document.querySelector('#quantity').innerHTML = `${item.quantity - 2} Pics`;
+    showStock();
   };
 
   // Button 3
@@ -139,13 +137,12 @@ function showStockList(item) {
         name: item.name,
         description: item.description,
         price: item.price,
-        quantity: Number(item.quantity) - 3,
+        quantity: item.quantity - 3,
       })
       .then((res) => console.log(res))
       .catch((err) => console.log(err));
-    document.querySelector('#quantity').innerHTML = `${
-      Number(item.quantity) - 3
-    } Pics`;
+    // document.querySelector('#quantity').innerHTML = `${item.quantity - 3} Pics`;
+    showStock();
   };
 
   div_row.appendChild(div_col_name);
@@ -162,24 +159,25 @@ function showStockList(item) {
   document.querySelector('#response').appendChild(div_card);
 }
 
-const axiosInstance = axios.create({
-  baseURL: BASE_URL,
-});
+// const axiosInstance = axios.create({
+//   baseURL: BASE_URL,
+// });
 
-axiosInstance.get('/stock').then((res) => {
-  res.data.forEach((item) => {
-    showStockList(item);
-    console.log(item);
-  });
-});
-
-// function showStock() {
-//   axios.get(`${BASE_URL}/stock`).then((res) => {
-//     res.data.forEach((item) => {
-//       showStockList(item);
-//       console.log(item);
-//     });
+// axiosInstance.get('/stock').then((res) => {
+//   res.data.forEach((item) => {
+//     showStockList(item);
+//     console.log(item);
 //   });
-// }
+// });
 
-// showStock();
+function showStock() {
+  document.querySelector('#response').innerHTML = '';
+  axios.get(`${BASE_URL}/stock`).then((res) => {
+    res.data.forEach((item) => {
+      showStockList(item);
+      console.log(item);
+    });
+  });
+}
+
+showStock();
