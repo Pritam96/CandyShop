@@ -1,4 +1,4 @@
-const BASE_URL = 'https://crudcrud.com/api/1f5d685a5cb14052a8c31b32a6cbcbf1';
+const BASE_URL = 'https://crudcrud.com/api/1bed7b1a85a844a2be722a3868a5e301';
 
 const form = document.querySelector('#_form');
 
@@ -15,13 +15,16 @@ function addToTheList(e) {
 
   axios
     .post(`${BASE_URL}/stock`, item)
-    .then((res) => console.log(res))
+    .then((res) => {
+      console.log(res);
+      showStockItems();
+    })
     .catch((err) => console.log(err));
 
   form.reset();
 }
 
-function showStockList(item) {
+function stock(item) {
   //   document.getElementById('response').innerHTML += `
   //   <div class="card">
   //         <div class="card-body">
@@ -84,17 +87,7 @@ function showStockList(item) {
   div_col_btn1.appendChild(btn1);
 
   btn1.onclick = () => {
-    axios
-      .put(`${BASE_URL}/stock/${item._id}`, {
-        name: item.name,
-        description: item.description,
-        price: item.price,
-        quantity: item.quantity - 1,
-      })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
-    // document.querySelector('#quantity').innerHTML = `${item.quantity - 1} Pics`;
-    showStock();
+    takeItem(1, item);
   };
 
   // Button 2
@@ -108,17 +101,7 @@ function showStockList(item) {
   div_col_btn2.appendChild(btn2);
 
   btn2.onclick = () => {
-    axios
-      .put(`${BASE_URL}/stock/${item._id}`, {
-        name: item.name,
-        description: item.description,
-        price: item.price,
-        quantity: item.quantity - 2,
-      })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
-    // document.querySelector('#quantity').innerHTML = `${item.quantity - 2} Pics`;
-    showStock();
+    takeItem(2, item);
   };
 
   // Button 3
@@ -132,17 +115,7 @@ function showStockList(item) {
   div_col_btn3.appendChild(btn3);
 
   btn3.onclick = () => {
-    axios
-      .put(`${BASE_URL}/stock/${item._id}`, {
-        name: item.name,
-        description: item.description,
-        price: item.price,
-        quantity: item.quantity - 3,
-      })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
-    // document.querySelector('#quantity').innerHTML = `${item.quantity - 3} Pics`;
-    showStock();
+    takeItem(3, item);
   };
 
   div_row.appendChild(div_col_name);
@@ -159,25 +132,29 @@ function showStockList(item) {
   document.querySelector('#response').appendChild(div_card);
 }
 
-// const axiosInstance = axios.create({
-//   baseURL: BASE_URL,
-// });
-
-// axiosInstance.get('/stock').then((res) => {
-//   res.data.forEach((item) => {
-//     showStockList(item);
-//     console.log(item);
-//   });
-// });
-
-function showStock() {
+function showStockItems() {
   document.querySelector('#response').innerHTML = '';
   axios.get(`${BASE_URL}/stock`).then((res) => {
     res.data.forEach((item) => {
-      showStockList(item);
+      stock(item);
       console.log(item);
     });
   });
 }
 
-showStock();
+showStockItems();
+
+function takeItem(qty, item) {
+  axios
+    .put(`${BASE_URL}/stock/${item._id}`, {
+      name: item.name,
+      description: item.description,
+      price: item.price,
+      quantity: item.quantity - qty,
+    })
+    .then((res) => {
+      console.log(res);
+      showStockItems();
+    })
+    .catch((err) => console.log(err));
+}
