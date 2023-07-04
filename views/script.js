@@ -1,6 +1,8 @@
-const BASE_URL = 'https://crudcrud.com/api/1bed7b1a85a844a2be722a3868a5e301';
+const BASE_URL = 'http://localhost:4000';
 
 const form = document.querySelector('#_form');
+
+const products_response = document.querySelector('#response');
 
 form.addEventListener('submit', addToTheList);
 
@@ -14,9 +16,9 @@ function addToTheList(e) {
   const item = { name, description, price, quantity };
 
   axios
-    .post(`${BASE_URL}/stock`, item)
+    .post(`${BASE_URL}/add-product`, item)
     .then((res) => {
-      console.log(res);
+      console.log('Product Added');
       showStockItems();
     })
     .catch((err) => console.log(err));
@@ -129,27 +131,32 @@ function stock(item) {
   div_card_body.appendChild(div_row);
   div_card.appendChild(div_card_body);
 
-  document.querySelector('#response').appendChild(div_card);
+  products_response.appendChild(div_card);
 }
 
 function showStockItems() {
-  document.querySelector('#response').innerHTML = '';
-  axios.get(`${BASE_URL}/stock`).then((res) => {
-    res.data.forEach((item) => {
-      stock(item);
-      console.log(item);
-    });
+  products_response.innerHTML = '';
+  axios.get(`${BASE_URL}`).then((res) => {
+    if (res.data.length > 0) {
+      res.data.forEach((item) => {
+        stock(item);
+        // console.log(item);
+      });
+    } else {
+      const paragraph = document.createElement('p');
+      paragraph.textContent = 'No Products Available!';
+      products_response.appendChild(paragraph);
+    }
   });
 }
 
 showStockItems();
 
 function takeItem(qty, item) {
+  console.log(item);
   axios
-    .put(`${BASE_URL}/stock/${item._id}`, {
-      name: item.name,
-      description: item.description,
-      price: item.price,
+    .post(`${BASE_URL}/update-product`, {
+      id: item.id,
       quantity: item.quantity - qty,
     })
     .then((res) => {
